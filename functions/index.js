@@ -1,34 +1,34 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const express = require('express');
+const app = express();
 
 admin.initializeApp();
 
-exports.helloWorld = functions.https.onRequest((request, response) => {
- response.send("Hello from ReacFire!");
-});
-
-exports.getScreams = functions.https.onRequest((request, response) => {
+app.get('/screams', (request, response) => {
     admin
     .firestore()
     .collection('screams')
+    .orderBy('createdAt', 'desc')
     .get()
     .then(data => {
         let screams = [];
-        data.forEach( doc => screams.push(doc.data()));
+        data.forEach( doc => screams.push({
+            screamId: doc.id,
+            body: doc.data().body,
+            userHandle: doc.data().userHandle,
+            createdAt: doc.data().createdAt
+        }));
         return response.json(screams);
     })
     .catch(error => console.error(error));
-});
+})
 
-exports.createScreams = functions.https.onRequest((request, response) => {
-    if (request.method !== 'POST') {
-        return response.status(400).json({ error: 'Method Not Allowed!' });
-    }
-
+app.post('/screams', (request, response) => {
     const schema = {
         body: request.body.body,
         userHandle: request.body.userHandle,
-        createdAt: admin.firestore.Timestamp.fromDate(new Date())
+        createdAt: new Date().toISOString()
     };
 
     admin
@@ -41,3 +41,5 @@ exports.createScreams = functions.https.onRequest((request, response) => {
         console.error(error)
     });
 });
+
+exports.api = functions.region('europe-west1').https.onRequest(app);
