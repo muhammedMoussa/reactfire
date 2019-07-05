@@ -114,6 +114,35 @@ app.post('/signup', (request, response) => {
     // @TODO: Validate Data
 });
 
+// Login Route
+app.post('/login', (request, response) => {
+    let errors = {};
+    const userData = {
+        email: request.body.email,
+        password: request.body.password
+    }
+
+    if (isEmpty(userData.password)) { errors.password = 'Must not be empty'; }
+    if (isEmpty(userData.email)) { errors.email = 'Must not be empty'; }
+
+    if (Object.keys(errors).length > 0) { return response.status(400).json(errors); }
+
+    firebase.auth().signInWithEmailAndPassword(userData.email, userData.password)
+    .then(data => data.user.getIdToken())
+    .then( token => response.json(token))
+    .catch(error => {
+        console.error(error);
+        if (error.code === 'auth/wrong-password') {
+            return response.status(400).json({ general: 'Wrong credentials, you can try again!' });
+        } else {
+            return response
+            .status(500)
+            .json({ general: 'Something went wrong, please try again' });
+        }
+    })
+
+});
+
 // Validations Helpers..
 const isEmail = (email) => {
     const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
