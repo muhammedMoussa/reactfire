@@ -133,7 +133,7 @@ app.post('/login', (request, response) => {
     .catch(error => {
         console.error(error);
         if (error.code === 'auth/wrong-password') {
-            return response.status(400).json({ general: 'Wrong credentials, you can try again!' });
+            return response.status(401).json({ general: 'Wrong credentials, you can try again!' });
         } else {
             return response
             .status(500)
