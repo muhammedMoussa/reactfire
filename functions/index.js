@@ -9,6 +9,40 @@ admin.initializeApp();
 firebase.initializeApp(config.firebaseConfig);
 const db = admin.firestore();
 
+// Auth Middleware
+const FBAuth = (request, response, next) => {
+    let idToken;
+    if (
+        request.headers.authorization &&
+        request.headers.authorization.startsWith('Bearer ')
+    ) {
+        idToken = request.headers.authorization.split('Bearer ')[1];
+    } else {
+        console.error('No token found');
+        return response.status(403).json({ error: 'Unauthorized' });
+    }
+
+    admin
+    .auth()
+    .verifyIdToken(idToken)
+    .then((decodedToken) => {
+      request.user = decodedToken;
+      return db
+        .collection('users')
+        .where('userId', '==', request.user.uid)
+        .limit(1)
+        .get();
+    })
+    .then((data) => {
+        request.user.handle = data.docs[0].data().handle;
+        return next();
+    })
+    .catch((err) => {
+        console.error('Error while verifying token ', err);
+        return response.status(403).json(err);
+    });
+}
+
 app.get('/screams', (request, response) => {
     db
     .collection('screams')
@@ -23,14 +57,16 @@ app.get('/screams', (request, response) => {
             createdAt: doc.data().createdAt
         }));
         return response.json(screams);
+
     })
     .catch(error => console.error(error));
 })
 
-app.post('/screams', (request, response) => {
+app.post('/screams', FBAuth,(request, response) => {
+    console.log(request.user)
     const schema = {
         body: request.body.body,
-        userHandle: request.body.userHandle,
+        userHandle: request.user.handle,
         createdAt: new Date().toISOString()
     };
 
