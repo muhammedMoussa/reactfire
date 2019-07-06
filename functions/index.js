@@ -165,7 +165,7 @@ app.post('/login', (request, response) => {
 
     firebase.auth().signInWithEmailAndPassword(userData.email, userData.password)
     .then(data => data.user.getIdToken())
-    .then( token => response.json(token))
+    .then( token => response.json({ token }))
     .catch(error => {
         console.error(error);
         if (error.code === 'auth/wrong-password') {
