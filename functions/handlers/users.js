@@ -3,6 +3,7 @@ const firebase = require('firebase');
 const { admin, db } = require('../util/admin');
 const { isEmail, isEmpty } = require('../util/validators');
 const config = require('../util/config');
+const { validateSignupData, validateLoginData } = require('../util/validators');
 
 firebase.initializeApp(config);
 
@@ -14,27 +15,10 @@ exports.signup = (request, response) => {
         handle: request.body.handle,
     };
 
-    let errors = {};
-
-    if (isEmpty(newUser.email)) {
-        errors.email = 'Must not be empty';
-    } else if (!isEmail(newUser.email)) {
-        errors.email = 'Must be a valid email address';
-    }
-
-    if (isEmpty(newUser.password)) { errors.password = 'Must not be empty'; }
-    if (newUser.password
-            && newUser.confirmPassword
-                && newUser.password !== newUser.confirmPassword) {
-                    errors.confirmPassword = 'Passwords must match';
-    }
-
-    if (isEmpty(newUser.handle)) { errors.handle = 'Must not be empty'; }
-
-    if (Object.keys(errors).length > 0) { return response.status(400).json(errors); }
+    const { valid, errors } = validateSignupData(newUser);
+    if (!valid) return res.status(400).json(errors);
 
     const initImg = 'no-image.png';
-
     let token, userId;
 
     db.doc(`/users/${newUser.handle}`)
@@ -76,16 +60,13 @@ exports.signup = (request, response) => {
 }
 
 exports.login = (request, response) => {
-    let errors = {};
     const userData = {
         email: request.body.email,
         password: request.body.password
     }
 
-    if (isEmpty(userData.password)) { errors.password = 'Must not be empty'; }
-    if (isEmpty(userData.email)) { errors.email = 'Must not be empty'; }
-
-    if (Object.keys(errors).length > 0) { return response.status(400).json(errors); }
+    const { valid, errors } = validateLoginData(userData);
+    if (!valid) return res.status(400).json(errors);
 
     firebase.auth().signInWithEmailAndPassword(userData.email, userData.password)
     .then(data => data.user.getIdToken())
