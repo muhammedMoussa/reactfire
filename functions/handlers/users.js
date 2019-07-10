@@ -142,3 +142,26 @@ exports.addUserDetails = (request, response) => {
       return res.status(500).json({ error: error.code });
     });
 }
+
+exports.getAuthenticatedUser = (request, response) => {
+  let userData = {};
+  db.doc(`/users/${request.user.handle}`)
+    .get()
+    .then(doc => {
+      if (doc.exists) {
+        userData.credentials = doc.data();
+        return db.collection('screams')
+               .where('userHandle', '==', request.user.handle)
+               .get();
+      }
+    })
+    .then(data => {
+      userData.screams = [];
+      data.forEach(doc => userData.screams.push(doc.data()))
+      return response.json(userData);
+    })
+    .catch((error) => {
+      console.error(error);
+      return response.status(500).json({ error: error.code });
+    });
+}
