@@ -3,7 +3,7 @@ const firebase = require('firebase');
 const { admin, db } = require('../util/admin');
 const { isEmail, isEmpty } = require('../util/validators');
 const config = require('../util/config');
-const { validateSignupData, validateLoginData } = require('../util/validators');
+const { validateSignupData, validateLoginData, reduceUserDetails } = require('../util/validators');
 
 firebase.initializeApp(config);
 
@@ -131,3 +131,14 @@ exports.uploadImage = (request, response) => {
     });
     busboy.end(request.rawBody);
 };
+
+exports.addUserDetails = (request, response) => {
+  let userDetails = reduceUserDetails(request.body);
+  db.doc(`/users/${request.user.handle}`)
+    .update(userDetails)
+    .then(() => { response.json({ message: 'Details added successfully' }); })
+    .catch((error) => {
+      console.error(error);
+      return res.status(500).json({ error: error.code });
+    });
+}
