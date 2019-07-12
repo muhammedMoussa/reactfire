@@ -36,3 +36,27 @@ exports.postOneScream = (request, response) => {
         console.error(error)
     });
 }
+
+exports.getScream = (request, response) => {
+    let screamData = {};
+    db.doc(`/screams/${request.params.screamId}`).get()
+        .then(doc => {
+            if (!doc.exists) {
+                return response.status(404).json({ error: 'Scream not found' });
+            }
+            screamData = doc.data();
+            screamData.screamId = doc.id;
+            return db.collection('comments').orderBy('createdAt', 'desc')
+                    .where('screamId', '==', request.params.screamId).get();
+        })
+        .then(data => {
+            console.log(data);
+            screamData.comments = [];
+            data.comments.forEach(doc => screamData.comments.push(doc.data()));
+            return response.json(screamData);
+        })
+        .catch((error) => {
+            console.error(error);
+            response.status(500).json({ error: error.code });
+        });
+}
