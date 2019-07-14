@@ -56,3 +56,38 @@ exports.createNotificationOnLike = functions
       })
       .catch((error) => console.error(error));
   });
+
+exports.deleteNotificationOnUnLike = functions
+    .region('europe-west1')
+    .firestore.document('likes/{id}')
+    .onDelete((snapshot) => {
+    return db
+        .doc(`/notifications/${snapshot.id}`)
+        .delete()
+        .catch((error) => {
+            console.error(error);
+            return;
+        });
+});
+
+exports.createNotificationOnLike = functions
+    .region('europe-west1')
+    .firestore.document('comments/{id}')
+    .onCreate((snapshot) => {
+    return db
+        .doc(`/screams/${snapshot.data().screamId}`)
+        .get()
+        .then((doc) => {
+        if (doc.exists) {
+            return db.doc(`/notifications/${snapshot.id}`).set({
+            createdAt: new Date().toISOString(),
+            recipient: doc.data().userHandle,
+            sender: snapshot.data().userHandle,
+            type: 'comment',
+            read: false,
+            screamId: doc.id
+            });
+        }
+    })
+    .catch((error) => console.error(error));
+});
