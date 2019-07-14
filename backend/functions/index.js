@@ -70,7 +70,7 @@ exports.deleteNotificationOnUnLike = functions
         });
 });
 
-exports.createNotificationOnLike = functions
+exports.createNotificationOnComment = functions
     .region('europe-west1')
     .firestore.document('comments/{id}')
     .onCreate((snapshot) => {
