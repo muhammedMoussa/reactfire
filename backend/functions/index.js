@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const app = require('express')();
 
+const db = require('./util/admin');
 const { getAllScreams,
         postOneScream,
         getScream,
@@ -33,3 +34,25 @@ app.post('/user', FbAuth, addUserDetails);
 app.get('/user', FbAuth, getAuthenticatedUser);
 
 exports.api = functions.region('europe-west1').https.onRequest(app);
+
+exports.createNotificationOnLike = functions
+  .region('europe-west1')
+  .firestore.document('likes/{id}')
+  .onCreate((snapshot) => {
+    return db
+      .doc(`/screams/${snapshot.data().screamId}`)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          return db.doc(`/notifications/${snapshot.id}`).set({
+            createdAt: new Date().toISOString(),
+            recipient: doc.data().userHandle,
+            sender: snapshot.data().userHandle,
+            type: 'like',
+            read: false,
+            screamId: doc.id
+          });
+        }
+      })
+      .catch((error) => console.error(error));
+  });
