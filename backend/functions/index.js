@@ -13,7 +13,9 @@ const { signup,
         login,
         uploadImage,
         addUserDetails,
-        getAuthenticatedUser } = require('./handlers/users');
+        getAuthenticatedUser,
+        getUserDetails,
+        markNotificationsRead } = require('./handlers/users');
 const FbAuth = require('./util/fbAuth');
 
 //screams routes
@@ -32,6 +34,8 @@ app.post('/login', login);
 app.post('/user/image', FbAuth, uploadImage);
 app.post('/user', FbAuth, addUserDetails);
 app.get('/user', FbAuth, getAuthenticatedUser);
+app.get('/user/:handle', getUserDetails);
+app.post('/notifications', FbAuth, markNotificationsRead);
 
 exports.api = functions.region('europe-west1').https.onRequest(app);
 
