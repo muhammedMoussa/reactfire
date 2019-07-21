@@ -95,3 +95,22 @@ exports.createNotificationOnComment = functions
     })
     .catch((error) => console.error(error));
 });
+
+exports.onUserImageChange = functions
+.region('europe-west1')
+.firestore.document('/users/{userId}')
+.onUpdate(change => {
+  console.log(change.before.data());
+  console.log(change.after.data());
+  if (change.before.data().imageUrl !== change.after.data().imageUrl) {
+    let batch = db.batch();
+    return db.collection('screams').where('userHandle', '==', change.before.userHandle).get()
+    .then(data => {
+      data.forEach(doc => {
+        const scream = db.doc(`/screams/${doc.id}`);
+        batch.update(scream, { userImage: change.after.imageUrl });
+      });
+      batch.commit();
+    });
+  }
+});

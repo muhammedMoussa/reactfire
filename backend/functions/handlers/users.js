@@ -95,7 +95,6 @@ exports.uploadImage = (request, response) => {
     let imageFileName;
 
     busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-      console.log(fieldname, file, filename, encoding, mimetype);
       if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') {
         return response.status(400).json({ error: 'Wrong file type submitted' });
       }
