@@ -6,3 +6,12 @@ body, html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.container {
+  margin: 80px auto 0 auto;
+  max-width: 1200px;
+}
+
+.nav-container {
+  margin: auto;
+}
