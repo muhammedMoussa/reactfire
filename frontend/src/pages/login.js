@@ -138,6 +138,7 @@ export class login extends Component {
                         </small>
                     </form>
                 </Grid>
+                <Grid item sm />
             </Grid>
         )
     }
