@@ -14,7 +14,7 @@ export class home extends Component {
           .get('/screams')
           .then((res) => {
             // @TODO: Handle This Inside Render Function..
-            this.recentScreamsMarkup = res.data.map((scream) => <Scream scream={scream} />)
+            this.recentScreamsMarkup = res.data.map((scream) => <Scream key= {scream.screamId} scream={scream} />)
             this.setState({
               screams: res.data
             });

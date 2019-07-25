@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import withStyles from '@material-ui/core/styles/withStyles';
-import Link from 'react-router-dom/Link';
+import { Link } from 'react-router-dom';
 import Moment from 'moment';
 
 import Card from '@material-ui/core/Card';
@@ -45,7 +45,7 @@ class Scream extends Component {
         title="Profile image"
         className={classes.image}
       />
-      <CardContent class={classes.content}>
+      <CardContent className={classes.content}>
         <Typorgraphy
           variant="h5"
           component={Link}
@@ -55,7 +55,7 @@ class Scream extends Component {
           { userHandle }
         </Typorgraphy>
         <Typography variant="body2" color="textSecondary">
-          { Moment(createdAt).format('LLLL') }
+          { Moment(createdAt).fromNow() }
         </Typography>
         <Typography variant="body1">{ body }</Typography>
       </CardContent>
