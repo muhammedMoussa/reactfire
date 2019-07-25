@@ -94,10 +94,11 @@ export class login extends Component {
                         <TextField
                             id="email"
                             name="email"
-                            typse="email"
+                            type="email"
                             label="Email"
                             className={classes.textField}
-                            helperText={errors.email ? true : false}
+                            helperText={errors.email}
+                            error={errors.email ? true : false}
                             value={this.state.email}
                             onChange={this.handleChange}
                             fullWidth

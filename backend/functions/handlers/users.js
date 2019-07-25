@@ -16,7 +16,7 @@ exports.signup = (request, response) => {
     };
 
     const { valid, errors } = validateSignupData(newUser);
-    if (!valid) return res.status(400).json(errors);
+    if (!valid) return response.status(400).json(errors);
 
     const initImg = 'no-image.png';
     let token, userId;
@@ -66,15 +66,26 @@ exports.login = (request, response) => {
     }
 
     const { valid, errors } = validateLoginData(userData);
-    if (!valid) return res.status(400).json(errors);
+    if (!valid) return response.status(400).json(errors);
 
     firebase.auth().signInWithEmailAndPassword(userData.email, userData.password)
     .then(data => data.user.getIdToken())
     .then( token => response.json({ token }))
     .catch(error => {
         console.error(error);
+        let errors = {};
         if (error.code === 'auth/wrong-password') {
-            return response.status(401).json({ general: 'Wrong credentials, you can try again!' });
+          errors.password = 'Wrong Password.';
+          return response.status(401).json(errors);
+        } else if (error.code === 'auth/invalid-email') {
+          errors.email = 'Enter valid email address.';
+          return response.status(401).json(errors);
+        } else if (error.code === 'auth/user-not-found') {
+          errors.email = 'There is no user recorded to this mail.';
+          return response.status(401).json(errors);
+        } else if (error.code === 'auth/user-not-user') {
+          errors.email = 'Wrong Email.';
+          return response.status(401).json(errors);
         } else {
             return response
             .status(500)
@@ -138,7 +149,7 @@ exports.addUserDetails = (request, response) => {
     .then(() => { response.json({ message: 'Details added successfully' }); })
     .catch((error) => {
       console.error(error);
-      return res.status(500).json({ error: error.code });
+      return response.status(500).json({ error: error.code });
     });
 }
 
