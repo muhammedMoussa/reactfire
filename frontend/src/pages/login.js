@@ -37,7 +37,7 @@ const styles = {
     progress: {
       position: 'absolute'
     }
-};
+  };
 
 export class login extends Component {
     constructor() {
@@ -46,7 +46,7 @@ export class login extends Component {
             email: '',
             password: '',
             loading: '',
-            errors: ''
+            errors: {}
         };
     }
 
@@ -60,7 +60,9 @@ export class login extends Component {
 
         axios.post('/login', userData)
             .then(res => {
+                // @TODO: MOVE TOKEN TO COOKIES..
                 this.setState({ loading: false });
+                localStorage.setItem('FBIdToken', `Bearer ${res.data.token}`);
                 this.props.history.push('/');
             })
             .catch(err => {
