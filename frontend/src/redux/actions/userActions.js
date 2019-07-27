@@ -71,6 +71,16 @@ export const getUserData = () => (dispatch) => {
     .catch((err) => console.log(err));
 };
 
+export const updateUserData = userData => dispatch => {
+  dispatch({ type: LOADING_USER });
+  axios
+    .post('/user', userData)
+    .then(() => {
+      dispatch(getUserData());
+    })
+    .catch((err) => console.log(err));
+};
+
 const setAuthorizationHeader = token => {
     const FBIdToken = `Bearer ${token}`;
     localStorage.setItem('FBIdToken', FBIdToken);
