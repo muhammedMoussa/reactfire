@@ -9,12 +9,10 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
-
 import EditIcon from '@material-ui/icons/Edit';
 
 import { updateUserData } from '../redux/actions/userActions';
+import CustomeBtn from '../util/CustomeBtn';
 
 const styles = (theme) => ({
     textField: {
@@ -79,11 +77,13 @@ class EditDetails extends Component {
 
         return (
             <Fragment>
-                <Tooltip title="Edit Informations" placement="top">
-                    <IconButton onClick={this.handleOpen} className={classes.button}>
-                        <EditIcon color="primary"/>
-                    </IconButton>
-                </Tooltip>
+                <CustomeBtn
+                  tip="Edit Informations"
+                  onClick={this.handleOpen}
+                  btnClassName={classes.button}
+                >
+                  <EditIcon color="primary" />
+                </CustomeBtn>
                 <Dialog
                     open={this.state.open}
                     onClose={this.handleClose}
