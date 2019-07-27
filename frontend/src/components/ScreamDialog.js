@@ -7,7 +7,7 @@ import Moment from 'moment';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+// import DialogTitle from '@material-ui/core/DialogTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -53,11 +53,11 @@ class ScreamDialog extends Component {
     const {
       classes,
       scream: {
-        screamId,
+        // screamId,
         body,
         createdAt,
-        likeCount,
-        commentCount,
+        // likeCount,
+        // commentCount,
         userImage,
         userHandle
       },
