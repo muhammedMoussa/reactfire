@@ -16,11 +16,13 @@ import FavoriteBorder from '@material-ui/icons/FavoriteBorder';
 
 import { likeScream, unlikeScream } from '../redux/actions/dataActions';
 import CustomeBtn from '../util/CustomeBtn';
+import DeleteScream from './DeleteScream';
 
 const styles = {
   card: {
     display: 'flex',
-    marginBottom: 20
+    marginBottom: 20,
+    position: 'relative'
   },
   image: {
     minWidth: 200
@@ -56,11 +58,14 @@ class Scream extends Component {
         createdAt,
         userImage,
         userHandle,
-        // screamId,
+        screamId,
         likeCount,
         commentCount
       },
-      user: { authenticated }
+      user: {
+        authenticated,
+        credentials: { handle }
+      }
     } = this.props;
     const likeButton = !authenticated ? (
       <CustomeBtn tip="Like">
@@ -77,6 +82,10 @@ class Scream extends Component {
         <FavoriteBorder color="primary" />
       </CustomeBtn>
     );
+
+    const deleteBtn = authenticated && userHandle === handle ? (
+      <DeleteScream screamId={screamId} />
+    ) : (null);
     return (
       <Card className={classes.card}>
         <CardMedia
@@ -93,6 +102,7 @@ class Scream extends Component {
           >
             {userHandle}
           </Typography>
+          {deleteBtn}
           <Typography variant="body2" color="textSecondary">
             {Moment(createdAt).fromNow()}
           </Typography>
