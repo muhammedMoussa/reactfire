@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
