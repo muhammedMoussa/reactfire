@@ -7,7 +7,7 @@ import { SET_USER,
 import axios from 'axios';
 
 export const loginUser = (userData, history) => dispatch => {
-    dispatch({ type: LOADING_UI });
+  dispatch({ type: LOADING_UI });
     axios
     .post('/login', userData)
     .then((res) => {
