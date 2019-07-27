@@ -20,6 +20,7 @@ import KeyboardReturn from '@material-ui/icons/KeyboardReturn';
 import { connect } from 'react-redux';
 
 import { uploadUserImage, logoutUser } from '../redux/actions/userActions';
+import EditDetails from './EditDetails';
 
 const styles = (theme) => ({
     paper: {
@@ -149,6 +150,7 @@ class Profile extends Component {
                 <KeyboardReturn color="primary" />
               </IconButton>
             </Tooltip>
+            <EditDetails />
             </div>
           </Paper>
         ) : (
