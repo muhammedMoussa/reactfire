@@ -24,6 +24,10 @@ exports.getAllScreams = (request, response) => {
 
 exports.postOneScream = (request, response) => {
     console.log(request.user)
+    if (request.body.body.trim() === '') {
+      return response.status(400).json({ body: 'Must not be empty' });
+    }
+
     const schema = {
         body: request.body.body,
         userHandle: request.user.handle,

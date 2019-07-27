@@ -77,3 +77,7 @@ export const postScream = scream => dispatch => {
         console.log(err)
     });
 }
+
+export const clearErrors = () => (dispatch) => {
+    dispatch({ type: CLEAR_ERRORS });
+};

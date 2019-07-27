@@ -12,126 +12,127 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 
-import { postScream } from '../redux/actions/dataActions';
+import { postScream, clearErrors } from '../redux/actions/dataActions';
 import CustomeBtn from '../util/CustomeBtn';
 
 const styles = (theme) => ({
-    submitButton: {
-      position: 'relative'
-    },
-    progressSpinner: {
-      position: 'absolute'
-    },
-    closeButton: {
-      position: 'absolute',
-      left: '90%',
-      top: '10%'
-    },
-    textField: {
-        margin: '10px auto 10px auto'
-    }
+  submitButton: {
+    position: 'relative',
+    float: 'right',
+    marginTop: 10
+  },
+  progressSpinner: {
+    position: 'absolute'
+  },
+  closeButton: {
+    position: 'absolute',
+    left: '90%',
+    top: '10%'
+  },
+  textField: {
+      margin: '10px auto 10px auto'
+  }
 });
 
 class PostScream extends Component {
-    state = {
-      open: false,
-      body: '',
-      errors: {}
-    };
+  state = {
+    open: false,
+    body: '',
+    errors: {}
+  };
 
-    componentWillReceiveProps = nextProps => {
-        if (nextProps.UI.erros) {
-            this.setState({ errors: nextProps.UI.errors });
-        }
-
-        if (!nextProps.UI.errors && !nextProps.UI.loading) {
-            this.setState({ body: '' });
-            this.handleClose();
-        }
+  componentWillReceiveProps = nextProps => {
+    if (nextProps.UI.errors) {
+        this.setState({ errors: nextProps.UI.errors });
     }
+
+    if (!nextProps.UI.errors && !nextProps.UI.loading) {
+      this.setState({ body: '', open: false, errors: {} });
+    }
+  }
 
     handleOpen = () => this.setState({ open: true });
 
-    handleClose = () => this.setState({ open: false });
+    handleClose = () => {
+        this.props.clearErrors();
+        this.setState({ open: false, errors: {} });
+    }
 
     handleChange = e => this.setState({ [e.target.name]: e.target.value });
 
     handleSubmit = e => {
         e.preventDefault();
-        if (this.state.body.trim() === '') {
-            // @TODO: ADD SNACKBAR..
-            return;
-        }
+        // @TODO: HANDLE FRONTEND VALIDATION..
         this.props.postScream({ body: this.state.body });
     }
+  render() {
+    const { errors, open } = this.state;
+    const { classes, UI: { loading }} = this.props;
 
-    render() {
-        const { errors, open } = this.state;
-        const { classes, UI: { loading }} = this.props;
-
-        return (
-            <Fragment>
-                <CustomeBtn tip="Post a Scream!" onClick={this.handleOpen}>
-                    <AddIcon />
-                </CustomeBtn>
-                <Dialog
-                    open={open}
-                    onClose={this.handleClose}
+    return (
+      <Fragment>
+        <CustomeBtn tip="Post a Scream!" onClick={this.handleOpen}>
+          <AddIcon />
+        </CustomeBtn>
+        <Dialog
+          open={open}
+          onClose={this.handleClose}
+          fullWidth
+          maxWidth="sm"
+        >
+            <CustomeBtn tip="Close" onClick={this.handleClose} tipClassName={classes.closeButton}>
+                <CloseIcon />
+            </CustomeBtn>
+            <DialogTitle>Post a new scream</DialogTitle>
+            <DialogContent>
+                <form onSubmit={this.handleSubmit}>
+                <TextField
+                    name="body"
+                    type="text"
+                    placeholder="Maybe scream on your mind?"
+                    multiline
+                    rows="3"
+                    label="Scream"
+                    error={errors.body ? true : false }
+                    helperText={errors.body}
+                    className={classes.textField}
+                    onChange={this.handleChange}
                     fullWidth
-                    maxWidth="sm"
+                />
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    className={classes.submitButton}
+                    disabled={loading}
                 >
-                    <CustomeBtn tip="Close" onClick={this.handleClose} tipClassName={classes.closeButton}>
-                        <CloseIcon />
-                    </CustomeBtn>
-                    <DialogTitle>Post a new scream</DialogTitle>
-                    <DialogContent>
-                        <form onSubmit={this.handleSubmit}>
-                            <TextField
-                                name="body"
-                                type="text"
-                                placeholder="Maybe scream on your mind?"
-                                multiline
-                                rows="3"
-                                label="Scream"
-                                error={errors.body ? true : false }
-                                helperText={errors.body}
-                                className={classes.textField}
-                                onChange={this.handleChange}
-                                fullWidth
-                            />
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                color="primary"
-                                className={classes.submitButton}
-                                disabled={loading}
-                            >
-                                Share
-                                {loading && (
-                                <CircularProgress
-                                    size={30}
-                                    className={classes.progressSpinner}
-                                />
-                                )}
-                            </Button>
-                        </form>
-                    </DialogContent>
-                </Dialog>
-            </Fragment>
-        );
-    }
+                    Submit
+                    {loading && (
+                    <CircularProgress
+                        size={30}
+                        className={classes.progressSpinner}
+                    />
+                    )}
+                </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </Fragment>
+    );
+  }
 }
 
 PostScream.propTypes = {
-    postScream: PropTypes.func.isRequired,
-    UI: PropTypes.object.isRequired
+  postScream: PropTypes.func.isRequired,
+  clearErrors: PropTypes.func.isRequired,
+  UI: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
-    UI: state.UI
+  UI: state.UI
 });
 
 export default connect(
-    mapStateToProps,
-    { postScream }
-  )(withStyles(styles)(PostScream));
+  mapStateToProps,
+  { postScream, clearErrors }
+)(withStyles(styles)(PostScream));
