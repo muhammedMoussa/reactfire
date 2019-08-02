@@ -13,9 +13,11 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import UnfoldMore from '@material-ui/icons/UnfoldMore';
+import ChatIcon from '@material-ui/icons/Chat';
 
 import { getScream } from '../redux/actions/dataActions';
 import CustomeBtn from '../util/CustomeBtn';
+import LikeButton from './LikeButton';
 
 const styles = (theme) => ({
     invisibleSeparator: {
@@ -34,6 +36,15 @@ const styles = (theme) => ({
     closeButton: {
       position: 'absolute',
       left: '90%'
+    },
+    expandButton: {
+      position: 'absolute',
+      left: '90%'
+    },
+    spinnerDiv: {
+      textAlign: 'center',
+      marginTop: 50,
+      marginBottom: 50
     }
 });
 
@@ -53,11 +64,11 @@ class ScreamDialog extends Component {
     const {
       classes,
       scream: {
-        // screamId,
+        screamId,
         body,
         createdAt,
-        // likeCount,
-        // commentCount,
+        likeCount,
+        commentCount,
         userImage,
         userHandle
       },
@@ -65,7 +76,9 @@ class ScreamDialog extends Component {
      } = this.props;
 
      const dialogMarkup = loading ? (
-       <CircularProgress size={200} />
+      <div className={classes.spinnerDiv}>
+        <CircularProgress size={200} thickness={2} />
+      </div>
      ) : (
        <Grid container spacing={16}>
          <Grid item sm={5}>
@@ -86,6 +99,12 @@ class ScreamDialog extends Component {
           </Typography>
           <hr className={classes.invisibleSeparator} />
           <Typography variant="body1">{body}</Typography>
+          <LikeButton screamId={screamId} />
+          <span>{likeCount} likes</span>
+          <CustomeBtn tip="comments">
+            <ChatIcon color="primary" />
+          </CustomeBtn>
+          <span>{commentCount} comments</span>
          </Grid>
        </Grid>
      );
