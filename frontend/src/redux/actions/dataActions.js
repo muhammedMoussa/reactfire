@@ -8,7 +8,8 @@ import { SET_SCREAMS,
          CLEAR_ERRORS,
          SET_ERRORS,
          SET_SCREAM,
-         STOP_LOADING_UI} from '../types';
+         STOP_LOADING_UI,
+         SUBMIT_COMMENT } from '../types';
 import axios from 'axios';
 
 export const getScreams = () => dispatch => {
@@ -29,7 +30,6 @@ export const getScreams = () => dispatch => {
 }
 
 export const likeScream = (screamId) => (dispatch) => {
-    debugger
     axios.get(`/scream/${screamId}/like`)
         .then((res) => {
             dispatch({
@@ -72,10 +72,7 @@ export const postScream = scream => dispatch => {
         dispatch(getScreams());
     })
     .catch((err) => {
-        dispatch({
-            type: SET_ERRORS,
-            payload: err.response.data
-        });
+        dispatch(clearErrors());
         console.log(err)
     });
 }
@@ -91,6 +88,23 @@ export const getScream = (screamId) => (dispatch) => {
       })
       .catch((err) => console.log(err));
 };
+
+export const submitComment = (screamId, commentData) => (dispatch) =>{
+    debugger
+    axios.post(`/scream/${screamId}/comment`, commentData).then(res => {
+        dispatch({
+            type: SUBMIT_COMMENT,
+            payload: res.data
+        });
+        dispatch(clearErrors());
+    })
+    .catch((err) => {
+        dispatch({
+          type: SET_ERRORS,
+          payload: err.response.data
+        });
+    });
+}
 
 export const clearErrors = () => (dispatch) => {
     dispatch({ type: CLEAR_ERRORS });

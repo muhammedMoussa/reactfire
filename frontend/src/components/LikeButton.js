@@ -11,7 +11,6 @@ import CustomeBtn from '../util/CustomeBtn';
 
 export class LikeButton extends Component {
     likedScream = () => {
-      debugger
         if ( this.props.user.likes
                 && this.props.user.likes.find((
                     like => like.screamId === this.props.screamId

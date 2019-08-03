@@ -52,7 +52,6 @@ class EditDetails extends Component {
     handleChange = e => this.setState({ [e.target.name]: e.target.value });
 
     handleSubmit = () => {
-        debugger
         const bio = this.state.bio;
         const website = this.state.website;
         const location = this.state.location;

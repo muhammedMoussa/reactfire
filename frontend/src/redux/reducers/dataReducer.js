@@ -3,7 +3,8 @@ import { SET_SCREAMS,
          UNLIKE_SCREAM,
          LOADING_DATA,
          DELETE_SCREAM,
-         SET_SCREAM} from '../types';
+         SET_SCREAM,
+         SUBMIT_COMMENT } from '../types';
 
 const initialState = {
     screams: [],
@@ -46,6 +47,15 @@ export default function(state = initialState, action) {
                 ...state,
                 scream: action.payload
             }
+        case SUBMIT_COMMENT: {
+            return {
+                ...state,
+                scream: {
+                  ...state.scream,
+                  comments: [action.payload, ...state.scream.comments]
+                }
+            };
+        }
         default:
             return state;
     }
