@@ -8,10 +8,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Button from  '@material-ui/core/Button';
 
 import HomeIcon from '@material-ui/icons/Home';
-import Notifications from '@material-ui/icons/Notifications';
 
 import CustomeBtn from '../util/CustomeBtn';
 import PostScream from './PostScream';
+import Notifications from './layout/Notifications';
 
 export class Nav extends Component {
     render() {
@@ -28,9 +28,7 @@ export class Nav extends Component {
                                         <HomeIcon />
                                     </CustomeBtn>
                                 </Link>
-                                <CustomeBtn tip="Notifications">
-                                    <Notifications />
-                                </CustomeBtn>
+                                <Notifications />
                             </Fragment>
                 ) : (
                         <Fragment>
