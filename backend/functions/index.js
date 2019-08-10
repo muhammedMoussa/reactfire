@@ -1,5 +1,6 @@
 const functions = require('firebase-functions');
 const app = require('express')();
+const cors = require('cors');
 
 const { db } = require('./util/admin');
 const { getAllScreams,
@@ -18,6 +19,7 @@ const { signup,
         markNotificationsRead } = require('./handlers/users');
 const FbAuth = require('./util/fbAuth');
 
+app.use(cors());
 //screams routes
 // @TODO: FIX scream AND screams ROUTES..
 app.get('/screams', getAllScreams)
