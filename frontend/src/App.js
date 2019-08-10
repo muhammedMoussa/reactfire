@@ -20,10 +20,10 @@ import signup from './pages/signup';
 import axios from 'axios';
 import user from './pages/user';
 
-
 const theme = createMuiTheme(themeObject);
-
+axios.defaults.baseURL = 'https://europe-west1-reactfire-fb6d1.cloudfunctions.net/api';
 const token = localStorage.FBIdToken;
+
 if (token) {
   const decodedToken = jwtDecode(token);
   if (decodedToken.exp * 1000 < Date.now()) {
